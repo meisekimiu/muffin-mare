@@ -1,0 +1,3 @@
+[submodule "3rdparty/adagio"]
+	path = 3rdparty/adagio
+	url = git@github.com:meisekimiu/libadagio-plusplus.git

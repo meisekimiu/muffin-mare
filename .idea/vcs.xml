@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3rdparty/adagio" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3rdparty/adagio/third_party/Catch2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3rdparty/adagio/third_party/entt" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/3rdparty/adagio/third_party/soloud" vcs="Git" />
+  </component>
+</project>
