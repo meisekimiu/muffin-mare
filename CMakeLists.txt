@@ -15,3 +15,6 @@ file(COPY "${CMAKE_SOURCE_DIR}/assets" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIREC
 
 target_link_libraries(muffins gl-adagio soloud raylib EnTT::EnTT SDL2::SDL2)
 
+install(TARGETS muffins DESTINATION bin)
+install(DIRECTORY assets DESTINATION bin)
+

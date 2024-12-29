@@ -1,0 +1,68 @@
+# This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
+name: Build Linux AppImage
+
+on:
+  push:
+    #branches: [ "main" ]
+  workflow_dispatch:
+
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Install appimage-builder
+        # i think their docker image is broken? idk
+        run: |
+          sudo apt-get install fuse libfuse2
+          wget -O appimage-builder https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
+          chmod +x appimage-builder
+
+      - name: Install raylib dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install xorg-dev libglu1-mesa-dev
+          sudo apt-get install libarchive-tools
+          sudo apt-get install libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev
+
+      - name: Run Cmake
+        # Build your program with the given configuration
+        run: cmake . -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=/usr
+
+      - name: Build
+        run: make -j$(nproc)
+
+      - name: Install to AppDir
+        run: make install DESTDIR=AppDir
+
+      - name: Prepare + Archive AppImage
+        run: |
+          ./appimage-builder --recipe AppImageBuilder.yml --skip-test
+          mkdir deploy
+          mkdir MuffinMare
+          cp *.AppImage MuffinMare
+          cp -r assets MuffinMare/assets
+          tar -czf deploy/MuffinMare.tar.gz MuffinMare
+
+      - name: Upload artifact
+        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        with:
+          server: ${{ secrets.ftp_server }}
+          username: ${{ secrets.ftp_user }}
+          password: ${{ secrets.ftp_password }}
+          local-dir: ./deploy/
+          server-dir: ./muffins-test/
+
