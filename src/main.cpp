@@ -1,5 +1,11 @@
 #define WITH_SDL2_STATIC 1
 
+/*
+ * We should define PI ourselves in adagio but for now...
+ * this helps with PI on windows lol
+*/
+#define _USE_MATH_DEFINES
+
 #include <adagio/adagio.hpp>
 #include <adagio/backends/raylib.hpp>
 #include <adagio/backends/soloud.hpp>
